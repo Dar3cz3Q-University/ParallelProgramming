@@ -1,0 +1,6 @@
+.vscode
+*.o
+*.a
+
+# For now binary files are just listed below
+moj_program
