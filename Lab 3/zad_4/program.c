@@ -27,9 +27,19 @@ void *zadanie_watku(void *arg_wsk) {
     void *stack_address;
     pthread_attr_getstack(&attr, &stack_address, &stack_size);
 
+    size_t guard_size;
+    pthread_attr_getguardsize(&attr, &guard_size);
+
+    int policy;
+    pthread_attr_getschedpolicy(&attr, &policy);
+
     printf("%d: Wielkosc stosu: %ld\n", arg, size);
     printf("%d: Stan watku: %d\n", arg, detach_state);
     printf("%d: Adres stosu: %p\n", arg, stack_address);
+    printf("%d: Guard size: %ld\n", arg, guard_size);
+    printf("%d: Policy: %d\n", arg, policy);
+
+    // Przepelnic stos
 }
 
 int main(int argc, char **argv) {
@@ -42,13 +52,17 @@ int main(int argc, char **argv) {
 
     void *new_stack = malloc(stack_size);
 
+    size_t guard_size = 1024 * 512;
+
     printf("Przygotowany adres stosu: %p\n", new_stack);
 
     for (i = 0; i < LICZBA_WATKOW; i++)
         pthread_attr_init(&thread_attr[i]);
 
     pthread_attr_setstacksize(&thread_attr[0], stack_size);
+    pthread_attr_setschedpolicy(&thread_attr[0], SCHED_FIFO);
     pthread_attr_setstack(&thread_attr[2], new_stack, stack_size);
+    pthread_attr_setguardsize(&thread_attr[2], guard_size);
 
     for (i = 0; i < LICZBA_WATKOW; i++) {
         args[i] = i + 1;
