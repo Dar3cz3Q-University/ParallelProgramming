@@ -85,10 +85,11 @@ void *watek_klient(void *arg_wsk) {
 
         int success = 0;
         do {
-            for (int i = 0; i < pub_wsk.l_wkf; i++) {
+            for (i = 0; i < pub_wsk.l_wkf; i++) {
                 if (pthread_mutex_trylock(&pub_wsk.tab_kuf[i]) == 0) {
                     kufel = i;
                     success = 1;
+                    break;
                 }
             }
         } while (success == 0);
@@ -99,10 +100,11 @@ void *watek_klient(void *arg_wsk) {
 
         success = 0;
         do {
-            for (int i = 0; i < pub_wsk.l_kr; i++) {
+            for (i = 0; i < pub_wsk.l_kr; i++) {
                 if (pthread_mutex_trylock(&pub_wsk.tab_kran[i]) == 0) {
                     kran = i;
                     success = 1;
+                    break;
                 }
             }
         } while (success == 0);
@@ -113,15 +115,15 @@ void *watek_klient(void *arg_wsk) {
         pthread_mutex_unlock(&pub_wsk.tab_kran[kran]);
 
         if (kran == 0)
-            printf("\nKlient %d, pije piwo Guinnessz kufla: %d\n", moj_id, kufel);
+            printf("\nKlient %d, pije piwo Guinnessz z kufla: %d\n", moj_id, kufel);
         else if (kran == 1)
-            printf("\nKlient %d, pije piwo Żywiec kufla: %d\n", moj_id, kufel);
+            printf("\nKlient %d, pije piwo Żywiec z kufla: %d\n", moj_id, kufel);
         else if (kran == 2)
-            printf("\nKlient %d, pije piwo Heineken kufla: %d\n", moj_id, kufel);
+            printf("\nKlient %d, pije piwo Heineken z kufla: %d\n", moj_id, kufel);
         else if (kran == 3)
-            printf("\nKlient %d, pije piwo Okocim kufla: %d\n", moj_id, kufel);
+            printf("\nKlient %d, pije piwo Okocim z kufla: %d\n", moj_id, kufel);
         else if (kran == 4)
-            printf("\nKlient %d, pije piwo Karlsberg kufla: %d\n", moj_id, kufel);
+            printf("\nKlient %d, pije piwo Karlsberg z kufla: %d\n", moj_id, kufel);
         // itd., itp.
 
         usleep(100);
