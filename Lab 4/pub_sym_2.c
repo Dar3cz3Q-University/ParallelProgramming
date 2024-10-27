@@ -113,15 +113,15 @@ void *watek_klient(void *arg_wsk) {
         pthread_mutex_unlock(&pub_wsk.tab_kran[kran]);
 
         if (kran == 0)
-            printf("\nKlient %d, pije piwo Guinness\n", moj_id);
+            printf("\nKlient %d, pije piwo Guinnessz kufla: %d\n", moj_id, kufel);
         else if (kran == 1)
-            printf("\nKlient %d, pije piwo Żywiec\n", moj_id);
+            printf("\nKlient %d, pije piwo Żywiec kufla: %d\n", moj_id, kufel);
         else if (kran == 2)
-            printf("\nKlient %d, pije piwo Heineken\n", moj_id);
+            printf("\nKlient %d, pije piwo Heineken kufla: %d\n", moj_id, kufel);
         else if (kran == 3)
-            printf("\nKlient %d, pije piwo Okocim\n", moj_id);
+            printf("\nKlient %d, pije piwo Okocim kufla: %d\n", moj_id, kufel);
         else if (kran == 4)
-            printf("\nKlient %d, pije piwo Karlsberg\n", moj_id);
+            printf("\nKlient %d, pije piwo Karlsberg kufla: %d\n", moj_id, kufel);
         // itd., itp.
 
         usleep(100);
