@@ -83,31 +83,31 @@ void *watek_klient(void *arg_wsk) {
 
         printf("\nKlient %d, wybieram kufel\n", moj_id);
 
-        int success = 0;
+        result = 0;
         do {
             for (i = 0; i < pub_wsk.l_wkf; i++) {
                 if (pthread_mutex_trylock(&pub_wsk.tab_kuf[i]) == 0) {
                     kufel = i;
-                    success = 1;
+                    result = 1;
                     break;
                 }
             }
-        } while (success == 0);
+        } while (result == 0);
 
         printf("\nKlient %d, wybrałem kufel %d\n", moj_id, kufel);
 
         printf("\nKlient %d, wybieram kran\n", moj_id);
 
-        success = 0;
+        result = 0;
         do {
             for (i = 0; i < pub_wsk.l_kr; i++) {
                 if (pthread_mutex_trylock(&pub_wsk.tab_kran[i]) == 0) {
                     kran = i;
-                    success = 1;
+                    result = 1;
                     break;
                 }
             }
-        } while (success == 0);
+        } while (result == 0);
 
         printf("\nKlient %d, nalewam z kranu %d\n", moj_id, kran);
         usleep(100);

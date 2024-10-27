@@ -69,7 +69,7 @@ void *watek_klient(void *arg_wsk) {
 
         printf("\nKlient %d, wybieram kufel\n", moj_id);
 
-        int success = 0;
+        result = 0;
 
         do {
             while (pthread_mutex_trylock(&blokada) != 0) {
@@ -78,11 +78,11 @@ void *watek_klient(void *arg_wsk) {
 
             if (l_kf > 0) {
                 l_kf--;
-                success = 1;
+                result = 1;
             }
 
             pthread_mutex_unlock(&blokada);
-        } while (success == 0);
+        } while (result == 0);
 
         printf("\nKlient %d, liczba kufli po pobraniu: %d\n", moj_id, l_kf);
 
