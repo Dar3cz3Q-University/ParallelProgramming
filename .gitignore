@@ -1,11 +1,3 @@
 .vscode
 *.o
 *.a
-
-# For now binary files are just listed below
-moj_program
-clone
-fork
-program
-two_threads
-pthreads_detach_kill
