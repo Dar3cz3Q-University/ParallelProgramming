@@ -22,7 +22,7 @@ public class Main {
             double start = xp + i * interval;
             double end = start + interval;
             Calka_runnable calka_runnable = new Calka_runnable(start, end, dx, result);
-            executor.submit(calka_runnable);
+            executor.execute(calka_runnable);
         }
 
         executor.shutdown();

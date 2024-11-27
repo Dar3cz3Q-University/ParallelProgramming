@@ -12,6 +12,7 @@ class DivideTask extends RecursiveTask<int[]> {
     this.arrayToDivide = arrayToDivide;
   }
 
+  @Override
   protected int[] compute() {
 
     if (arrayToDivide.length <= THRESHOLD) {
