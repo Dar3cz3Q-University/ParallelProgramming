@@ -36,7 +36,6 @@ int my_write_lock_unlock(cz_t *cz_p) {
 }
 
 void inicjuj(cz_t *cz_p) {
-
     cz_p->l_p = 0;
     cz_p->l_c = 0;
     pthread_mutex_init(&cz_p->mutex, NULL);
