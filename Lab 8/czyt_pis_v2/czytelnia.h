@@ -10,6 +10,7 @@ typedef struct {
     int l_c; // liczba czytajacych
     pthread_mutex_t mutex;
     pthread_rwlock_t lock;
+    int zasob;
 } cz_t;
 
 /*** Deklaracje procedur interfejsu ***/

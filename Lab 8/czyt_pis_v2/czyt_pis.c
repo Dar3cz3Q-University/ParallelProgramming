@@ -37,7 +37,6 @@ void *funkcja_czytelnika(void *arg) {
 
     for (;;) {
 
-        usleep(rand() % 1000000);
         printf("czytelnik %lu - przed zamkiem\n", pthread_self());
 
         my_read_lock_lock(cz_p);
@@ -51,6 +50,7 @@ void *funkcja_czytelnika(void *arg) {
 
         my_read_lock_unlock(cz_p);
 
+        usleep(rand() % 1000);
         printf("czytelnik %lu - po zamku\n", pthread_self());
     }
 }
@@ -61,7 +61,6 @@ void *funkcja_pisarza(void *arg) {
 
     for (;;) {
 
-        usleep(rand() % 3000000);
         printf("pisarz %lu - przed zamkiem\n", pthread_self());
 
         my_write_lock_lock(cz_p);
@@ -75,6 +74,7 @@ void *funkcja_pisarza(void *arg) {
 
         my_write_lock_unlock(cz_p);
 
+        usleep(rand() % 1000);
         printf("pisarz %lu - po zamku\n", pthread_self());
     }
 }
