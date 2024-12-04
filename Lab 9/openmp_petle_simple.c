@@ -31,6 +31,8 @@ int main() {
     // rownolegle (static)
     //
 
+    printf("\nSTATIC\n");
+
     double suma_parallel = 0.0;
 #pragma omp parallel for default(none) shared(a) reduction(+ : suma_parallel) schedule(static) ordered
     for (int i = 0; i < WYMIAR; i++) {
@@ -46,44 +48,38 @@ int main() {
     // rownolegle (static, 3)
     //
 
-    suma_parallel = 0.0;
+    printf("\nSTATIC 3\n");
+
 #pragma omp parallel for default(none) shared(a) reduction(+ : suma_parallel) schedule(static, 3) ordered
     for (int i = 0; i < WYMIAR; i++) {
         int id_w = omp_get_thread_num();
-        suma_parallel += a[i];
 #pragma omp ordered
         printf("a[%2d]->W_%1d  \n", i, id_w);
     }
-
-    printf("\nSuma wyrazów tablicy równolegle (z klauzulą - (static, 3)): %lf\n", suma_parallel);
 
     //
     // rownolegle (dynamic)
     //
 
-    suma_parallel = 0.0;
+    printf("\nDYNAMIC\n");
+
 #pragma omp parallel for default(none) shared(a) reduction(+ : suma_parallel) schedule(dynamic) ordered
     for (int i = 0; i < WYMIAR; i++) {
         int id_w = omp_get_thread_num();
-        suma_parallel += a[i];
 #pragma omp ordered
         printf("a[%2d]->W_%1d  \n", i, id_w);
     }
-
-    printf("\nSuma wyrazów tablicy równolegle (z klauzulą - (dynamic)): %lf\n", suma_parallel);
 
     //
     // rownolegle (dynamic, 3)
     //
 
-    suma_parallel = 0.0;
+    printf("\nDYNAMIC 3\n");
+
 #pragma omp parallel for default(none) shared(a) reduction(+ : suma_parallel) schedule(dynamic, 3) ordered
     for (int i = 0; i < WYMIAR; i++) {
         int id_w = omp_get_thread_num();
-        suma_parallel += a[i];
 #pragma omp ordered
         printf("a[%2d]->W_%1d  \n", i, id_w);
     }
-
-    printf("\nSuma wyrazów tablicy równolegle (z klauzulą - (dynamic, 3)): %lf\n", suma_parallel);
 }
