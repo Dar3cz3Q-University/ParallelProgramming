@@ -84,7 +84,7 @@ int main() {
     omp_set_nested(1);
     double tab[3][2];
 
-#pragma omp parallel for schedule(static, 2) default(none) shared(a, tab) ordered
+#pragma omp parallel for schedule(static, 2) num_threads(3) default(none) shared(a, tab) ordered
     for (int i = 0; i < WYMIAR; ++i) {
         int thread_id_outer = omp_get_thread_num();
 #pragma omp parallel for schedule(static, 2) num_threads(2) default(none) shared(a, tab, i) firstprivate(thread_id_outer) ordered
@@ -93,12 +93,12 @@ int main() {
             tab[thread_id_outer][thread_id_inner] += a[i][j];
 #pragma omp ordered
             {
-                printf("(%d, %d): %d, ", i, j, omp_get_thread_num());
+                printf("\tCOL\tj: %d\tthread_id: %d\n", j, thread_id_inner);
             }
         }
 #pragma omp ordered
         {
-            printf("outer_thread_id: %d \n", omp_get_thread_num());
+            printf("ROW\ti: %d\tthread_id: %d\n", i, thread_id_outer);
         }
     }
 
