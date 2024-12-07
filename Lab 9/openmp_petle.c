@@ -22,8 +22,6 @@ int main() {
 
     printf("Suma wyrazów tablicy: %lf\n", suma);
 
-    omp_set_nested(1);
-
     //
     // Sumowanie po wierszach
     //
@@ -45,13 +43,12 @@ int main() {
     //
 
     suma_parallel = 0.0;
-#pragma omp parallel for default(none) reduction(+ : suma_parallel) shared(a) schedule(dynamic) ordered
-    for (int i = 0; i < WYMIAR; ++i) {
-        for (int j = 0; j < WYMIAR; ++j) {
-            suma_parallel += a[j][i];
+#pragma omp parallel for default(none) reduction(+ : suma_parallel) shared(a) schedule(dynamic)
+    for (int j = 0; j < WYMIAR; ++j) {
+        for (int i = 0; i < WYMIAR; ++i) {
+            suma_parallel += a[i][j];
         }
-#pragma omp ordered
-        printf("i: %d\tthread_id: %d\n", i, omp_get_thread_num());
+        printf("i: %d\tthread_id: %d\n", j, omp_get_thread_num());
     }
 
     printf("Suma wyrazów tablicy równolegle (kolumny): %lf\n", suma_parallel);
