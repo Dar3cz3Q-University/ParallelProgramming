@@ -39,7 +39,7 @@ int main() {
 #pragma omp critical
         {
             for (i = 0; i < 10; i++) {
-                a_shared++; // RAW, WAW, WAR [zależność w lini 34, po rozpisaniu pętli i inkrementacji]
+                a_shared++; // RAW, WAW, WAR
             }
         }
 
@@ -49,7 +49,7 @@ int main() {
 
         for (i = 0; i < 10; i++) {
 #pragma omp atomic
-            e_atomic += omp_get_thread_num(); // RAW, WAW, WAR [zależność w lini 42, po rozpisaniu pętli i inkrementacji]
+            e_atomic += omp_get_thread_num(); // RAW, WAW, WAR
         }
 
         f_threadprivate = omp_get_thread_num();
