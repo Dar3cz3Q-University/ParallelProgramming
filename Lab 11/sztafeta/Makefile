@@ -20,18 +20,18 @@ OPT = -g -DDEBUG
 #LIB = -L../pomiar_czasu -lm
 LIB = -lm
 
-all: MPI_simple run 
+all: sztafeta run 
 
-run: MPI_simple
-	$(MPI_run) -np 4 ./MPI_simple
+run: sztafeta
+	$(MPI_run) -np 4 ./sztafeta
 
 # zaleznosci i komendy
-MPI_simple : MPI_simple.o
-	$(LOADER) $(OPT) MPI_simple.o -o MPI_simple $(LIB)
+sztafeta : sztafeta.o
+	$(LOADER) $(OPT) sztafeta.o -o sztafeta $(LIB)
 
 # jak uzyskac plik moj_program.o ?
-MPI_simple.o: MPI_simple.c 
-	$(CCOMP) -c $(OPT) MPI_simple.c
+sztafeta.o: sztafeta.c 
+	$(CCOMP) -c $(OPT) sztafeta.c
 
 clean:
-	rm -f *.o MPI_simple
+	rm -f *.o sztafeta

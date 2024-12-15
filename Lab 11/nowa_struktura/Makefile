@@ -20,18 +20,18 @@ OPT = -g -DDEBUG
 #LIB = -L../pomiar_czasu -lm
 LIB = -lm
 
-all: MPI_simple run 
+all: nowa_struktura run 
 
-run: MPI_simple
-	$(MPI_run) -np 4 ./MPI_simple
+run: nowa_struktura
+	$(MPI_run) -np 5 ./nowa_struktura
 
 # zaleznosci i komendy
-MPI_simple : MPI_simple.o
-	$(LOADER) $(OPT) MPI_simple.o -o MPI_simple $(LIB)
+nowa_struktura : nowa_struktura.o
+	$(LOADER) $(OPT) nowa_struktura.o -o nowa_struktura $(LIB)
 
 # jak uzyskac plik moj_program.o ?
-MPI_simple.o: MPI_simple.c 
-	$(CCOMP) -c $(OPT) MPI_simple.c
+nowa_struktura.o: nowa_struktura.c 
+	$(CCOMP) -c $(OPT) nowa_struktura.c
 
 clean:
-	rm -f *.o MPI_simple
+	rm -f *.o nowa_struktura

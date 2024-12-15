@@ -20,18 +20,18 @@ OPT = -g -DDEBUG
 #LIB = -L../pomiar_czasu -lm
 LIB = -lm
 
-all: MPI_simple run 
+all: potok run 
 
-run: MPI_simple
-	$(MPI_run) -np 4 ./MPI_simple
+run: potok
+	$(MPI_run) -np 5 ./potok
 
 # zaleznosci i komendy
-MPI_simple : MPI_simple.o
-	$(LOADER) $(OPT) MPI_simple.o -o MPI_simple $(LIB)
+potok : potok.o
+	$(LOADER) $(OPT) potok.o -o potok $(LIB)
 
 # jak uzyskac plik moj_program.o ?
-MPI_simple.o: MPI_simple.c 
-	$(CCOMP) -c $(OPT) MPI_simple.c
+potok.o: potok.c 
+	$(CCOMP) -c $(OPT) potok.c
 
 clean:
-	rm -f *.o MPI_simple
+	rm -f *.o potok
