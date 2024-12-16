@@ -30,13 +30,18 @@ int main(int argc, char **argv) {
             dest = 0;
             tag = 0;
 
+            MPI_Send(&rank, 1, MPI_INT, dest, tag, MPI_COMM_WORLD);
             MPI_Send(msg, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, dest, tag, MPI_COMM_WORLD);
-
         } else {
 
             for (i = 1; i < size; i++) {
 
-                MPI_Recv(receivedName, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, MPI_ANY_SOURCE,
+                MPI_Recv(&ranksent, 1, MPI_INT, MPI_ANY_SOURCE,
+                         MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                printf("Liczba od procesu o randze (status.MPI_SOURCE ->) %d: %d (i=%d)\n",
+                       status.MPI_SOURCE, ranksent, i);
+
+                MPI_Recv(receivedName, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, status.MPI_SOURCE,
                          MPI_ANY_TAG, MPI_COMM_WORLD, &status);
                 printf("Dane od procesu o randze (status.MPI_SOURCE ->) %d: %s (i=%d)\n",
                        status.MPI_SOURCE, receivedName, i);
