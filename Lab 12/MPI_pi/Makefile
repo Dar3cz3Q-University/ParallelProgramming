@@ -20,6 +20,11 @@ OPT = -g -DDEBUG
 #LIB = -L../pomiar_czasu -lm
 LIB = -lm
 
+all: run 
+
+run: MPI_pi
+	$(MPI_run) -np 4 ./MPI_pi
+
 # zaleznosci i komendy
 MPI_pi: MPI_pi.o
 	$(LOADER) $(OPT) MPI_pi.o -o MPI_pi $(LIB)

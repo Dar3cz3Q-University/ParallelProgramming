@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     for (i = 0; i < WYMIAR; i++)
         x[i] = 0.0;
 
-    if (rank == 0) {
+    if (rank == 1) {
 
         a = (double *)malloc((ROZMIAR + 1) * sizeof(double));
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
         for (i = 0; i < WYMIAR; i++)
             z[i] = 0.0;
 
-        MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&n, 1, MPI_INT, 1, MPI_COMM_WORLD);
         // podzial wierszowy
         n_wier = ceil(WYMIAR / size);
         n_wier_last = WYMIAR - n_wier * (size - 1);
@@ -92,58 +92,18 @@ int main(int argc, char **argv) {
             a_local[i] = 0.0;
 
         // ... collective communication instead of the following point-to-point
-
+        if (rank == 1) {
+            MPI_Scatter(a, WYMIAR * n_wier, MPI_DOUBLE, MPI_IN_PLACE, WYMIAR * n_wier, MPI_DOUBLE, 1, MPI_COMM_WORLD);
+        } else {
+            MPI_Scatter(a, WYMIAR * n_wier, MPI_DOUBLE, a_local, WYMIAR * n_wier, MPI_DOUBLE, 1, MPI_COMM_WORLD);
+        }
+        MPI_Bcast(x, WYMIAR, MPI_DOUBLE, 1, MPI_COMM_WORLD);
         // ....
 
-        // point-to-point not optimal communication
-        if (rank == 0) {
-
-            for (i = 0; i < WYMIAR * n_wier; i++)
-                a_local[i] = a[i];
-
-            for (i = 1; i < size - 1; i++) {
-                MPI_Send(&a[i * WYMIAR * n_wier], n_wier * WYMIAR, MPI_DOUBLE, i, tag, MPI_COMM_WORLD);
-                MPI_Send(&x[i * n_wier], n_wier, MPI_DOUBLE, i, tag, MPI_COMM_WORLD);
-            }
-
-            MPI_Send(&a[(size - 1) * WYMIAR * n_wier], n_wier_last * WYMIAR, MPI_DOUBLE, size - 1, tag, MPI_COMM_WORLD);
-            MPI_Send(&x[(size - 1) * n_wier], n_wier_last, MPI_DOUBLE, size - 1, tag, MPI_COMM_WORLD);
-
-            /* if(rank==0) printf("rank %d, a[0] %lf\n", rank, a[0]); */
-            /* if(rank==0) printf("rank %d, last %d, a[last] %lf\n", rank, */
-            /* 			 (size-1)*WYMIAR*n_wier+n_wier_last*WYMIAR-1, */
-            /* 			 a[(size-1)*WYMIAR*n_wier+n_wier_last*WYMIAR-1]); */
-
-        } else {
-
-            for (i = 0; i < WYMIAR; i++)
-                x[i] = 0.0;
-
-            source = 0;
-            if (rank < size - 1) {
-
-                MPI_Recv(a_local, n_wier * WYMIAR, MPI_DOUBLE, source,
-                         MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-                MPI_Recv(&x[rank * n_wier], n_wier, MPI_DOUBLE, source,
-                         MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-
-            } else {
-
-                MPI_Recv(a_local, n_wier_last * WYMIAR, MPI_DOUBLE, source,
-                         MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-                MPI_Recv(&x[(size - 1) * n_wier], n_wier_last, MPI_DOUBLE, source,
-                         MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-            }
-        }
-
-        if (rank == 0) {
+        if (rank == 1) {
             printf("Starting MPI matrix-vector product with block row decomposition!\n");
             t1 = MPI_Wtime();
         }
-
-        // local parts of x start at rank*n_wier
-        // MPI_Allgather(&x[rank*n_wier], n_wier, MPI_DOUBLE, x, n_wier, MPI_DOUBLE, MPI_COMM_WORLD );
-        MPI_Allgather(MPI_IN_PLACE, n_wier, MPI_DOUBLE, x, n_wier, MPI_DOUBLE, MPI_COMM_WORLD);
 
         for (i = 0; i < n_wier; i++) {
 
@@ -152,18 +112,13 @@ int main(int argc, char **argv) {
 
             for (j = 0; j < n; j++) {
                 t += a_local[ni + j] * x[j];
-                // if(i==1){
-                //   printf("rank %d: row %d, column %d, a %lf, x %lf, current y %lf\n",
-                //          rank, i, j, a_local[ni+j], x[j], t);
-                // }
             }
-            // printf("rank %d: row %d, final y %lf\n", rank, i, t);
             z[i] = t;
         }
 
         // just to measure time
         MPI_Barrier(MPI_COMM_WORLD);
-        if (rank == 0) {
+        if (rank == 1) {
             t1 = MPI_Wtime() - t1;
             printf("Wersja rownolegla MPI z dekompozycją wierszową blokową\n");
             printf("\tczas wykonania: %lf, Gflop/s: %lf, GB/s> %lf\n",
@@ -171,23 +126,13 @@ int main(int argc, char **argv) {
         }
 
         // ... collective communication instead of the following point-to-point
-
-        // ....
-
-        // point-to-point not optimal communication
-
-        if (rank > 0) {
-
-            MPI_Send(z, n_wier, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
-
+        if (rank == 1) {
+            MPI_Gather(MPI_IN_PLACE, n_wier, MPI_DOUBLE, z, n_wier, MPI_DOUBLE, 1, MPI_COMM_WORLD);
         } else {
-
-            for (i = 1; i < size; i++) {
-                MPI_Recv(&z[i * n_wier], n_wier, MPI_DOUBLE, i, tag, MPI_COMM_WORLD, &status);
-            }
+            MPI_Gather(z, n_wier, MPI_DOUBLE, z, n_wier, MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
 
-        if (rank == 0) {
+        if (rank == 1) {
 
             for (i = 0; i < WYMIAR; i++) {
                 if (fabs(y[i] - z[i]) > 1.e-9 * z[i]) {
@@ -201,7 +146,7 @@ int main(int argc, char **argv) {
         // the end if size > 1
     }
 
-    if (rank == 0) {
+    if (rank == 1) {
         free(a);
     }
 
