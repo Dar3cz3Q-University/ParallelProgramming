@@ -105,15 +105,30 @@ int main(int argc, char **argv) {
             t1 = MPI_Wtime();
         }
 
-        for (i = 0; i < n_wier; i++) {
+        if (rank == 1) {
+            for (i = n_wier * rank; i < n_wier * (rank + 1); i++) {
 
-            double t = 0.0;
-            int ni = n * i;
+                double t = 0.0;
+                int ni = n * i;
 
-            for (j = 0; j < n; j++) {
-                t += a_local[ni + j] * x[j];
+                for (j = 0; j < n; j++) {
+                    t += a[ni + j] * x[j];
+                }
+
+                z[i] = t;
             }
-            z[i] = t;
+        } else {
+            for (i = 0; i < n_wier; i++) {
+
+                double t = 0.0;
+                int ni = n * i;
+
+                for (j = 0; j < n; j++) {
+                    t += a_local[ni + j] * x[j];
+                }
+
+                z[i] = t;
+            }
         }
 
         // just to measure time
