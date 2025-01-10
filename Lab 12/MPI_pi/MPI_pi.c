@@ -53,6 +53,12 @@ int main(int argc, char **argv) {
 
     MPI_Reduce(&subtotal, &result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
+    printf("Before all reduce - Rank: %d, result: %lf\n", rank, result);
+
+    MPI_Allreduce(&subtotal, &result, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+    printf("After all reduce - Rank: %d, result: %lf\n", rank, result);
+
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (rank == 0) {
